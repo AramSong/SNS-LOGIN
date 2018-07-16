@@ -1,338 +1,221 @@
+로그인 구현
 
-http://apis.map.daum.net/
+Get your API key at: https://code.google.com/apis/console/  
 
-APP KEY 발급
+- Installation
 
-앱만들기
+    gem 'omniauth-google-oauth2'
 
-test-map
+1. 사용자 인증정보
+2. oauth 클라이언트 id 만들기
+3. 사용자 인증정보
+4. 웹애플리케이션 선택
+5. 생성
+6. social
+7. google+ api
+8. 사용설정
+9. 다운로드(json download)
+10. figaro 설치
 
+gem figaro
 
+bundle install
 
-1. rails 주소 등록
-2. 설정->일반
-3. 서버주소 등록
-4. 플랫폼추가 -> 웹
-5. 개발가이드 ->  자바스크립트 개발가이드
-6. 지도 클릭
-7. `$:~/workspace $ rails g controller home index new create`
-8. sample->지도 생성하기 -> sample 코드 
-9. javascript 복사
-10. `app/views/index`에 복사
+figaro install
 
-```js
-<div id="map"></div>
+1. Devise
 
-<script>
-    var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
-    mapOption = { 
-        center: new daum.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
-        level: 3 // 지도의 확대 레벨
-    };
+config/initializers/devise.rb
 
-    // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
-    var map = new daum.maps.Map(mapContainer, mapOption); 
-</script>
-```
-
-* `html` 코드 읽는 순서는 위에서부터 아래로 로드 
-
-11. javascript key 복사 
-
-```erb
-#id가 map인 style양식에 맞는 div를 만든다
-<div id="map"  style="width:100%;height:350px;"></div>
-
-#app key를 통해서 api를 호출
-<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=발급받은 키 입력"></script>
-
-<script>
-    #document는 지금 보고있는 페이지를 뜻함
-    #.getElementById : 지금 보고 있는 페이지의 id값을 찾는다.그     안의 내용을 mapContainer로 받는다.
-    var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
-    mapOption = { 
-        # 위도,경도를 center로 저장
-        center: new daum.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
-        level: 3 // 지도의 확대 레벨
-    };
-
-    // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
-    var map = new daum.maps.Map(mapContainer, mapOption); 
-</script>
-```
-
-12. Wizard를 이용하면 코드를 짜준다.
-13. sample - 클릭한 위치에 마커 표시하기
-14. `<div id="clickLatlng"></div> `추가하기 
-
-```erb
-<div id="map"  style="width:100%;height:350px;"></div>
-<div id="clickLatlng"></div>
-
-<script type="text/javascript" src=""></script>
-
-<script>
-    var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
-        mapOption = { 
-            center: new daum.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
-            level: 3 // 지도의 확대 레벨
-        };
-   
-    var map = new daum.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
-    
-    // 지도를 클릭한 위치에 표출할 마커입니다
-    var marker = new daum.maps.Marker({ 
-        // 지도 중심좌표에 마커를 생성합니다 
-        position: map.getCenter() 
-    }); 
-    // 지도에 마커를 표시합니다
-    marker.setMap(map);
-    
-    // 지도에 클릭 이벤트를 등록합니다
-    // 지도를 클릭하면 마지막 파라미터로 넘어온 함수를 호출합니다
-    daum.maps.event.addListener(map, 'click', function(mouseEvent) {        
-        
-        // 클릭한 위도, 경도 정보를 가져옵니다 
-        var latlng = mouseEvent.latLng; 
-        
-        // 마커 위치를 클릭한 위치로 옮깁니다
-        marker.setPosition(latlng);
-        
-        var message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, ';
-        message += '경도는 ' + latlng.getLng() + ' 입니다';
-        
-        var resultDiv = document.getElementById('clickLatlng'); 
-        resultDiv.innerHTML = message;
-        
-    });
-</script>
-```
-
-15. Docs
-16. `new.html.erb` : model post
-
-title :string
-
-lat :integer
-
-lng : integer
-
-17.  addListener
-
-```erb
- daum.maps.event.addListener(map, 'click', function(mouseEvent) {        
-        
-        // 클릭한 위도, 경도 정보를 가져옵니다 
-        var latlng = mouseEvent.latLng; 
-        
-        // 마커 위치를 클릭한 위치로 옮깁니다
-        marker.setPosition(latlng);
-        
-        var message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, ';
-        message += '경도는 ' + latlng.getLng() + ' 입니다';
-        
-        var resultDiv = document.getElementById('clickLatlng'); 
-        resultDiv.innerHTML = message;
-        
-    });
-```
-
-<문제>id 값이 lat인 친구한테 위에 값이 바뀌도록
-
-* textarea는 `.innerHTML`
-* input 은 `value`
-  
-
-<문제>create 버튼을 누르면 저장이 되도록
-
-`routes.rb`/`controller` 수정
-
-* form_for . strong parameter
-* form_for를 이용하면 두번 감싸진다. `ex)post[title]`
-* 따라서 controller에서 사용할 때, ` params[:post][:title]`
-
-```ruby
-    #Post.create(title: params[:post][:title],lat: params[:post][:lat],lng: params[:post][:lng])
-    
-    # post = Post.new
-    # post.title = params[:post][:title]
-    # post.lat = params[:post][:lat]
-    # post.lng= params[:post][:lng]
-    # post.save
-  
-# 앞에 post가 붙어있는 애들 중, title,lat,lng을 가져옴
-  	# params.require(:post).permit(:title, :lat,:lng)
-```
-
-`new.html.erb`에 form_for로 저장할경우  아래와 같이 두번 감싸져있다.
-
-<input id="title" type="text" name="post[title]">
-
-<input id="lat" type="text" name="post[lat]">
-
-<input id="lng" type="text" name="post[lng]">
-
-### 프로젝트
-
-다음맵 사용
-
-* 여러개 마커 표시하기
-
-- 다양한 이미지 마커 표시하기
-
-- 마커에 인포윈도우 표시하기
-
-- 닫기가 가능한 커스텀 오버레이
-
-- 주소로 장소 표시하기 =>주소로 좌표를 얻어낼 수 있다 
-
-  ```js
-  geocoder.addressSearch('제주특별자치도 제주시 첨단로 242', function(result, status) {
-  
-      // 정상적으로 검색이 완료됐으면 
-       if (status === daum.maps.services.Status.OK) {
-  
-          var coords = new daum.maps.LatLng(result[0].y, result[0].x);
-  
-          // 결과값으로 받은 위치를 마커로 표시합니다
-          var marker = new daum.maps.Marker({
-              map: map,
-              position: coords
-          });
-       }
-  ```
-
-  
-
-  
-
-- DB에 저장된 지도 보여주기 
-
-  `new.html.erb`
-
-  ```erb
-       mapOption = { 
-              //center: new daum.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
-  			//db에있는 좌표를 중심좌표로 
-              center: new daum.maps.LatLng(<%=@p.lat.to_i%>,<%= @p.lng.to_i%>),
-              level: 3 // 지도의 확대 레벨
-          };
-      
-  ```
-
-  
-
-`home_controller.rb`
-
-```ruby
-  def new
-    @p = Post.first
-   @post = Post.new
-  end
-```
-
-### summer note
-
-`Gemfile`
-
-```ruby
-gem 'summernote-rails', '~> 0.8.10.0'
-```
-
-`application.scss`
-
-```ruby
-@import 'bootstrap';
-@import 'summernote-bs4';
-```
-
-`app/assets/javascripts/application.js`
-
-```ruby
-//= require summernote/summernote-bs4.min
-//= require summernote-init
-```
-
-`app/assets/javascripts/summernote-init. js`
-
-```ruby
-$(document).on('ready', function() {
-  $('[data-provider="summernote"]').each(function() {
-  $(this).summernote({
-      height: 300
-    });
-  });
-});
-```
-
-`views/movies/_form`
-
-```erb
-  <div class="form-group">
-    <%= f.label :description %>
-    <%= f.text_area :description,'data-provider': :summernote %>
-  </div>
-```
-
-`app/assets/javascripts/summernote_init.js`
-
-```js
-$(document).on('ready', function() {
-  $('[data-provider="summernote"]').each(function() {
-  $(this).summernote({
-      height: 300,
-      callbacks: {
-        onImageUpload: function(files) {
-          return sendFile(files[0], $(this));
-         }
+      # ==> OmniAuth
+      # Add a new OmniAuth provider. Check the wiki for more information on setting
+      # up on your models and hooks.
+      # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
+      config.omniauth :google_oauth2, ENV['GOOGLE_CLIENT_ID'], ENV['GOOGLE_CLIENT_SECRET'], 
+      config.omniauth :google_oauth2, ENV['GOOGLE_CLIENT_ID'], ENV['GOOGLE_CLIENT_SECRET'], 
+      {
+        scope: 'email',
+        prompt: 'select_account'
       }
-    });
-  });
-});
-```
+
+config/application.yml : 복사 
+
+    development:
+    	GOOGLE_CLIENT_ID:
+    	GOOGLE_CLIENT_SECRET:
+
+db/migrate/devise_create_user.rb
+
+     $ rails g migration add_columns_to_users
+
+1. user 테이블에 column을 추가할 경우
+
+    class AddColumnsToUsers < ActiveRecord::Migration[5.0]
+      def change
+        # add_column :DB명, :컬럼명, :타입
+        add_column :users, :provider,		     :string
+        add_column :users, :name,                 :string
+        add_column :users, :uid,                  :string
+      end
+    end
+    
+
+rake db:migrate
+
+app/models/user.rb: :omniauthable 추가
+
+      devise :database_authenticatable, :registerable, 
+             :recoverable, :rememberable, :trackable, :validatable,
+             :omniauthable, omniauth_providers: [:google_oauth2]
 
 
 
-```ruby
-$ rails g model images img_path
-$ rails g uploader summernote
-```
+routes.rb
 
-`image.rb`
+      devise_for :users , controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
 
-```ruby
-class Image < ApplicationRecord
-    mount_uploader :image_path, SummernoteUploader
-end
+        ## 추가 부분
+          t.integer   :gubun      # 사용자 구분코드
+                                  # 관리자 :0, 사업자 :1, 일반사용자 :2
+          t.string    :nickname
+          t.string    :gender     
+          t.integer   :age
+          t.string    :phone
+          t.string    :address
 
-```
+"/users/auth/google_oauth2"
 
-`config/routes.rb`
+- controller 만들기
 
-```ruby
-  post '/uploads' => 'movies#upload_image'
-```
+$ rails g devise:controllers users
 
-`movie controller`
+controllers/users
 
-```ruby
- def upload_image
-    @image = Image.create("insertImage",data.image_path.url)
-    render json: @image
-  end
-```
+- registrations_controller: 회원가입. custom할때 이 controller를 수정한다.
+- password_controller: devise자체에서 제공하는 password 리셋해주는것.
+- omniauth_callbacks_controller:
 
-`show.html.erb` :브라우저가 인식할 수 있는 포맷으로 바꿔준다. simple_format
+    class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
+      def google_oauth2
+          # You need to implement the method below in your model (e.g. app/models/user.rb)
+          @user = User.from_omniauth(request.env['omniauth.auth'])
+    
+          if @user.persisted?
+          # record가 있으면 true. 이미 있는 record거나 삭제되지 않았다면 true. 아닐경우 false=> 있으면 true/ 없으면 false
+            flash[:notice] = I18n.t 'devise.omniauth_callbacks.success', kind: 'Google'
+            sign_in_and_redirect @user, event: :authentication
+          else
+            session['devise.google_data'] = request.env['omniauth.auth'].except(:extra) # Removing extra as it can overflow some session stores
+            redirect_to new_user_registration_url, alert: @user.errors.full_messages.join("\n")
+          end
+      end
+    end
 
-### rails admin
+user.rb
 
-`gem 'rails_admin'`
+    class User < ApplicationRecord
+      # Include default devise modules. Others available are:
+      # :confirmable, :lockable, :timeoutable and :omniauthable
+      devise :database_authenticatable, :registerable, 
+             :recoverable, :rememberable, :trackable, :validatable,
+             :omniauthable, omniauth_providers: [:google_oauth2]
+             
+      has_many    :likes       
+      has_many    :movies, through: :likes
+      has_many    :comments
+      
+      
+      def self.from_omniauth(access_token)
+        data = access_token.info
+        user = User.where(email: data['email']).first
+    
+        # Uncomment the section below if you want users to be created if they don't exist
+        # unless user
+        #     user = User.create(name: data['name'],
+        #        email: data['email'],
+        #        password: Devise.friendly_token[0,20]
+        #     )
+        # end
+        user
+      end
+      
+    end
 
-```ruby
-aaaraming:~/watcha_app (master) $ rails g rails_admin:install
-Running via Spring preloader in process 29955
-           ?  Where do you want to mount rails_admin? Press <enter> for [admin] > ahctahw
-       route  mount RailsAdmin::Engine => '/ahctahw', as: 'rails_admin'
-      create  config/initializers/rails_admin.rb
-```
+카카오 로그인
 
+https://developers.kakao.com/apps/212046/settings/user
+
+1. 사용자 불가 상태일경우 사용자 관리 on으로 누르기 
+2. 설정 
+3. 일반 플랫폼 추가 -> 웹 -> 사이트 도메인 추가
+4. routes.rb: 
+
+      devise_scope :user do
+        get '/users/auth/kakao', to: 'users/omniauth_callbacks#kakao'
+        get '/users/auth/kakao/callback', to: 'users/omniauth_callbacks#kakao_auth'
+      end
+
+1. 플랫폼 -> Redirect Path에 
+
+/users/auth/kakao/callback추가. 
+
+1. 개발가이드->REST API 도구
+2. REST API 키 복사
+3. application.yml
+
+    development:
+        GOOGLE_CLIENT_ID: 
+        GOOGLE_CLIENT_SECRET: 
+        KAKAO_REST_API_KEY:  
+
+1. rails g devise:views
+2. views/devise/session/new.html.erb
+3. REST API 개발가이드 -> 사용자관리-> 로그인
+4. omniauth_callbakc_controller
+
+    def kakao
+        redirect_to 'http://kauth.kakao.com/oauth/authorize?client_id={app_key}&redirect_uri={redirect_uri}&response_type=code HTTP/1.1'
+      end
+
+1. devise/sessions/new.html.erb
+
+    <%= link_to 'Sign_In_With_Kakao',users_auth_kakao_path %><br/>
+
+1. omniauth_callback_controller
+
+      def kakao
+        redirect_to "https://kauth.kakao.com/oauth/authorize?client_id=#{ENV['KAKAO_REST_API_KEY']}&redirect_uri=https://rails-tutorial-aaaraming.c9users.io/users/auth/kakao/callback&response_type=code"
+      end
+      
+      def kakao_auth
+        code = params[:code]
+        base_url = "https://kauth.kakao.com/oauth/token"
+        base_response = RestClient.post(base_url,{grant_type: 'authorization_code',
+                                                  client_id: ENV['KAKAO_REST_API_KEY'],
+                                                  redirect_uri: 'https://rails-tutorial-aaaraming.c9users.io/users/auth/kakao/callback',
+                                                  code: code})
+                                       
+        #JSON으로 날라온것을 해시로          
+        res = JSON.parse(base_response)
+        access_token = res["access_token"]
+        info_url = "https://kapi.kakao.com/v2/user/me"
+        info_response = RestClient.get(info_url, 
+                                        Authorization: "Bearer #{access_token}")
+                                        
+        puts info_response
+        
+      end
+
+Gemfile
+
+    gem 'rest-client'
+
+1. REST API 도구 -> 사용자 정보요청
+
+
+
+다음주
+
+git branch
+
+git branch 후 merge까지 
